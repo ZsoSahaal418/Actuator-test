@@ -1,0 +1,61 @@
+// actuator.cpp
+// 
+//
+//   
+/////////////////////////////////////////////////////////////////////////////
+
+#include "Actuator.h"
+#include "Interface.h"
+#include <iostream>
+#include <cstdlib>
+#include <math.h>
+#include "stdafx.h"
+
+using namespace std;
+
+Actuator::Actuator(double Ga, double Ra, double Ka, double Kb, double Kg, double Jm, double Bm, double Jl, double Bl){
+  _Ga = Ga;		
+  _Ra = Ra;		
+  _Ka = Ka;		
+  _Kb = Kb;		
+  _Kg = Kg;		
+  _Jm = Jm;		
+  _Bm = Bm;		
+  _Jl = Jl;
+  _Bl = Bl;
+  T = (Ra*Jm)/((Ra*Bm)+(Ka*Kb));
+  K = Ka/((Ra*Bm)+(Ka*Kb));
+  _Jeff = Jm;
+  _Beff = Bm;
+  qm = 0;	
+  qmdot = 0;
+  q = 0;	
+  qdot = 0;	
+  C1 = 1-(dt/T);
+  C2 = dt/T;
+  C3 = Kg+(Ra/Ka);
+}
+
+void Actuator::load(double Jload, double Bload){
+	_Jeff = _Jm + pow(_Kg,2)*Jload;
+	_Beff = _Bm + pow(_Kg,2)*Bload;
+	K = (_Ka*_Kg*_Ga)/((_Ra*_Beff)+(_Ka*_Kb));
+	T = (_Ra*_Jeff)/((_Ra*_Beff)+(_Ka*_Kb));
+	C1 = 1-(dt/T);
+	C2 = dt/T;
+    C3 = _Kg+(_Ra/_Ka);
+}
+
+void Actuator::init(double qinit, double qdotinit){
+	q = qinit;
+	qdot = qdotinit;
+	qm = qinit/_Kg;
+	qmdot = qdotinit/_Kg;
+}
+
+void Actuator::u2q(){
+	qmdot = (C1*qmdot)+(C2*u)+(C3*tauD);
+	qm = qm+(dt*qmdot);
+	qdot = qmdot*_Kg;
+	q = qm*_Kg;
+}
