@@ -1,0 +1,35 @@
+Interface.h
+//
+//       This file contains specification of the class "Interface". 
+//       The class represents the interface card which basically 
+//       consists of digital to analog converter and incremental 
+//       encoder counter. The inteface supports two functions, which 
+//       can be called from any C/C++ program (for example from PID 
+//       controller, or from a probe):
+//
+//		dac(a,u) - 	converts the controll signal to analog 
+//                 	voltage for the amplifier of the actuator a
+//
+//		enc(a) -  	Returns the current position of the 
+//				axis of the actuator a
+//
+//      Implementation note: class "Interface" is a friend class of
+//      class "Actuator", therefore it can access the private data of
+//      an actuator instance.
+//   
+//      John Dixon,   March 2013
+/////////////////////////////////////////////////////////////////
+
+class Actuator;	// Forward declaration
+
+class Interface {
+
+public:
+    // Input the control signal 
+    // to the amplifier via D/A converter
+  void dac(Actuator& a, double u);
+
+    // Get the position from encoder 
+  double enc(Actuator& a);
+
+};
