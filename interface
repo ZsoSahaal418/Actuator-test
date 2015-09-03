@@ -1,0 +1,33 @@
+//Interface.cpp
+//
+//       This file contains implementation of the class "Interface". 
+//	   Specification of the class "Interface" is given in header file 
+//       "Interface.h"
+//
+//       Implementation note: class "Interface" is a friend class of
+//       class "Actuator", therefore it can access the private data of
+//       an actuator instance.
+//   
+//      
+/////////////////////////////////////////////////////////////////
+
+#include "Interface.h"
+#include "Actuator.h"
+#include "stdafx.h"
+#include <iostream>
+#include <cstdlib>
+#include <math.h>
+
+using namespace std;
+
+class Actuator;	// Forward declaration
+
+void Interface::dac(Actuator& a, double u)
+{
+  a.u = u;
+}
+
+double Interface::enc(Actuator& a)
+{
+    return a.qm;
+}
