@@ -1,0 +1,43 @@
+// Test_Actuator.cpp 
+//
+//     This program tests classes Actuator and Interface
+//
+//     
+/////////////////////////////////////////////////////////////////
+
+#include "Actuator.h"
+#include "Interface.h"
+#include <iostream>
+#include <cstdlib>
+#include "stdafx.h"
+#include <math.h>
+
+using namespace std;
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+    Interface io;   // Create an instance of interface
+            		// Create an istance of actuator
+    Actuator a(1.0, 15.6, 0.028, 0.0283, 1.0/60, 1.21, 1.023, 0.00015, 0.0003);
+//                  Ga,  Ra,   Ka,    Kb,     Kg,     Jm,   Bm,     Jl,     Bl
+
+    double t = 0;   	// Time [sec]
+
+    io.dac(a,12);   	// Input voltage to the actuator 
+
+    double q, qold; 	// Position
+    double qdot;    	// Velocity
+
+            	// This loop emulates the actuator:
+    qold = 0;   
+    for (int i = 0; i<300; i++)
+    {       
+        a.u2q();    // An actuator step
+        t += dt;
+        q = io.enc(a);  // Get position from encoder
+        qdot = (q - qold)/dt; // Compute velocity
+        qold = q;
+        cout << t << "    " << q << "    " << qdot << endl;
+    }
+	return 0;
+}
