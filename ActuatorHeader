@@ -1,0 +1,52 @@
+// actuator.h
+// 
+//     This header file specifies class "Actuator"
+//     which represents a robot actuator consisting of: 
+//     amplifier, DC motor, encoder and gearhead
+//
+// 
+//
+//   
+/////////////////////////////////////////////////////////////////////////////
+
+const double dt = 0.001;// Integration time intgerval (= 1 msec)
+
+class Interface;		// Forward class declaration (class Interface 
+                        // is a friend of this class)
+
+class Actuator {
+  // Actuator parameters:
+  double _Ga;		// Amplifier gain [Volt/Volt]
+  double _Ra;		// Armature resistance [Ohm]
+  double _Ka;		// Torque constant [Nm/Amp]
+  double _Kb;		// Back electromotive constant [Volt/rad/sec]
+  double _Kg;		// Gear ratio [1/1]
+  double _Jm;		// Moment of inertia of motor [Kg m^2]
+  double _Bm;		// Viscous frition of motor [Nm/rad/sec]
+  double C1, C2, C3;// Integration constants 
+  double _Jl;
+  double _Bl;
+  // Actuator variables:
+  double tauD;	// Disturbance torque (at the load side)[Nm]
+  double qm;		// Position of the motor axis [rad]
+  double qmdot;	// Velocity of the motor axis [rad/sec]
+  double q;		// Position of the actuator axis [rad]
+  double qdot;	// Velocity of the actuator axis [rad/sec]
+  double u;		// Actuator input (from controller interface) [Volt]
+  double _Jeff;
+  double _Beff;
+  double T;
+  double K;
+
+  friend Interface;	// Member functions of Interface can access
+        // private data of this class
+public:
+
+  Actuator(double Ga, double Ra, double Ka, double Kb, double Kg, double Jm, double Bm, double Jl, double Bl);
+    // Adding inertial load to the actuator axis
+  void load(double JL, double BL); 
+    // Initializing the actuator position and velocity 
+  void init(double qinit, double qdotinit);
+    // Compute one integration step
+  void u2q(void);
+};
